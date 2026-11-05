@@ -12,7 +12,6 @@ from pathlib import Path
 
 import numpy as np
 import streamlit as st
-from PIL import Image
 
 from neumonia_detection.integrator import PneumoniaPipeline
 from neumonia_detection.load_model import PneumoniaModelLoader
@@ -90,7 +89,11 @@ def main() -> None:
     sample_files: list[Path] = []
     if sample_dir.exists():
         sample_files = sorted(
-            [f for f in sample_dir.iterdir() if f.suffix.lower() in [".dcm", ".jpeg", ".jpg", ".png"]]
+            [
+                f
+                for f in sample_dir.iterdir()
+                if f.suffix.lower() in [".dcm", ".jpeg", ".jpg", ".png"]
+            ]
         )
 
     selected_sample = None
@@ -123,7 +126,9 @@ def main() -> None:
         st.caption(f"Mostrando caso de prueba de muestra: `{source_name}`")
 
     if source_to_process is None:
-        st.write("👆 *Por favor cargue una radiografía o seleccione una muestra de la barra lateral para iniciar el análisis.*")
+        st.write(
+            "👆 *Por favor cargue una radiografía o seleccione una muestra de la barra lateral para iniciar el análisis.*"
+        )
         return
 
     # Ejecutar análisis
@@ -141,9 +146,19 @@ def main() -> None:
     col_metric1, col_metric2, col_metric3 = st.columns(3)
     with col_metric1:
         if result.is_pneumonia:
-            st.metric(label="Diagnóstico Predictivo", value="NEUMONÍA", delta="Patológico", delta_color="inverse")
+            st.metric(
+                label="Diagnóstico Predictivo",
+                value="NEUMONÍA",
+                delta="Patológico",
+                delta_color="inverse",
+            )
         else:
-            st.metric(label="Diagnóstico Predictivo", value="NORMAL", delta="Sin Hallazgos", delta_color="normal")
+            st.metric(
+                label="Diagnóstico Predictivo",
+                value="NORMAL",
+                delta="Sin Hallazgos",
+                delta_color="normal",
+            )
 
     with col_metric2:
         st.metric(
@@ -206,17 +221,19 @@ def main() -> None:
 
     # Detalles Técnicos del Contrato
     with st.expander("🛠️ Verificación Técnica de Contratos y Tensores"):
-        st.json({
-            "archivo": result.source_identifier,
-            "dimension_original": list(result.raw_image.shape),
-            "tensor_preprocesado_shape": list(result.preprocessed_tensor.shape),
-            "tensor_dtype": str(result.preprocessed_tensor.dtype),
-            "tensor_min": float(result.preprocessed_tensor.min()),
-            "tensor_max": float(result.preprocessed_tensor.max()),
-            "valores_finitos": bool(np.isfinite(result.preprocessed_tensor).all()),
-            "gradcam_heatmap_shape": list(result.gradcam_heatmap.shape),
-            "latencia_ms": round(result.inference_time_ms, 2),
-        })
+        st.json(
+            {
+                "archivo": result.source_identifier,
+                "dimension_original": list(result.raw_image.shape),
+                "tensor_preprocesado_shape": list(result.preprocessed_tensor.shape),
+                "tensor_dtype": str(result.preprocessed_tensor.dtype),
+                "tensor_min": float(result.preprocessed_tensor.min()),
+                "tensor_max": float(result.preprocessed_tensor.max()),
+                "valores_finitos": bool(np.isfinite(result.preprocessed_tensor).all()),
+                "gradcam_heatmap_shape": list(result.gradcam_heatmap.shape),
+                "latencia_ms": round(result.inference_time_ms, 2),
+            }
+        )
 
 
 if __name__ == "__main__":

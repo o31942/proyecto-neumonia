@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import io
 from pathlib import Path
-from typing import BinaryIO, Union
+from typing import BinaryIO
 
 import cv2
 import numpy as np
@@ -36,7 +36,7 @@ def _normalize_to_uint8(image_array: np.ndarray) -> np.ndarray:
     return np.clip(scaled, 0, 255).astype(np.uint8)
 
 
-def read_dicom(source: Union[str, Path, BinaryIO, bytes]) -> np.ndarray:
+def read_dicom(source: str | Path | BinaryIO | bytes) -> np.ndarray:
     """Lee una imagen médica en formato DICOM (.dcm) y extrae su matriz de píxeles.
 
     Gestiona la interpretación fotométrica (MONOCHROME1 vs MONOCHROME2) para
@@ -79,14 +79,16 @@ def read_dicom(source: Union[str, Path, BinaryIO, bytes]) -> np.ndarray:
         if pixel_array.shape[0] == 1:
             pixel_array = pixel_array[0]
         elif pixel_array.shape[-1] == 3:
-            pixel_array = cv2.cvtColor(pixel_array.astype(np.uint8), cv2.COLOR_RGB2GRAY).astype(np.float32)
+            pixel_array = cv2.cvtColor(pixel_array.astype(np.uint8), cv2.COLOR_RGB2GRAY).astype(
+                np.float32
+            )
         else:
             pixel_array = pixel_array[0]
 
     return _normalize_to_uint8(pixel_array)
 
 
-def read_standard_image(source: Union[str, Path, BinaryIO, bytes]) -> np.ndarray:
+def read_standard_image(source: str | Path | BinaryIO | bytes) -> np.ndarray:
     """Lee una imagen en formato estándar (.jpeg, .jpg, .png) en escala de grises.
 
     Args:
@@ -119,12 +121,14 @@ def read_standard_image(source: Union[str, Path, BinaryIO, bytes]) -> np.ndarray
     np_arr = np.frombuffer(buffer, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        raise ValueError("Los bytes suministrados no corresponden a una imagen válida decodificable.")
+        raise ValueError(
+            "Los bytes suministrados no corresponden a una imagen válida decodificable."
+        )
     return img
 
 
 def read_dicom_or_image(
-    source: Union[str, Path, BinaryIO, bytes],
+    source: str | Path | BinaryIO | bytes,
     file_extension_hint: str | None = None,
 ) -> np.ndarray:
     """Punto de entrada unificado para leer cualquier imagen de Rayos X (DICOM o estándar).

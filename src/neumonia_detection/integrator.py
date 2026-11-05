@@ -12,7 +12,7 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import BinaryIO, Union
+from typing import BinaryIO
 
 import numpy as np
 
@@ -67,7 +67,7 @@ class PneumoniaPipeline:
 
     def run(
         self,
-        source: Union[str, Path, BinaryIO, bytes],
+        source: str | Path | BinaryIO | bytes,
         source_name: str = "image",
     ) -> PneumoniaDiagnosisResult:
         """Ejecuta el pipeline de diagnóstico completo sobre una fuente de imagen.
@@ -131,7 +131,9 @@ def main() -> None:
         description="Pipeline CLI de Diagnóstico de Neumonía en Rayos X (UAO)"
     )
     parser.add_argument("image_path", type=str, help="Ruta a la imagen (.dcm, .jpg, .png)")
-    parser.add_argument("--model-path", type=str, default="models/WilhemNet86.h5", help="Ruta al modelo .h5")
+    parser.add_argument(
+        "--model-path", type=str, default="models/WilhemNet86.h5", help="Ruta al modelo .h5"
+    )
     parser.add_argument("--threshold", type=float, default=0.5, help="Umbral de clasificación")
 
     args = parser.parse_args()

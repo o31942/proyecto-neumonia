@@ -34,7 +34,6 @@ def build_wilhemnet_architecture(input_shape: tuple[int, int, int] = (512, 512, 
     Returns:
         tf.keras.Model: Modelo de Keras compilado para inferencia binaria.
     """
-    import tensorflow as tf
     from tensorflow.keras import layers, models
 
     inputs = layers.Input(shape=input_shape, name="input_xray")

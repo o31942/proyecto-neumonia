@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from neumonia_detection.grad_cam import generate_gradcam, overlay_heatmap
 from neumonia_detection.load_model import PneumoniaModelLoader
@@ -55,9 +54,7 @@ class TestGradCam:
         assert overlay_rgb.shape == (orig_h, orig_w, 3)
         assert overlay_rgb.dtype == np.uint8
 
-    def test_overlay_heatmap_alpha_blending(
-        self, sample_grayscale_image: np.ndarray
-    ) -> None:
+    def test_overlay_heatmap_alpha_blending(self, sample_grayscale_image: np.ndarray) -> None:
         # Arrange
         original = sample_grayscale_image
         heatmap = np.ones((32, 32), dtype=np.float32)

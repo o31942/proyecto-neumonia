@@ -41,7 +41,9 @@ def apply_clahe(
     if not isinstance(image, np.ndarray):
         raise TypeError(f"La entrada debe ser np.ndarray, recibido: {type(image)}")
     if image.ndim != 2:
-        raise ValueError(f"CLAHE requiere un array bidimensional (H, W), recibido: ndim={image.ndim}")
+        raise ValueError(
+            f"CLAHE requiere un array bidimensional (H, W), recibido: ndim={image.ndim}"
+        )
     if image.dtype != np.uint8:
         raise ValueError(f"CLAHE requiere dtype np.uint8, recibido: {image.dtype}")
 
@@ -83,7 +85,9 @@ def normalize_tensor(image: np.ndarray) -> np.ndarray:
     return np.clip(norm, 0.0, 1.0)
 
 
-def validate_preprocessed_contract(tensor: np.ndarray, target_size: int = DEFAULT_TARGET_SIZE) -> None:
+def validate_preprocessed_contract(
+    tensor: np.ndarray, target_size: int = DEFAULT_TARGET_SIZE
+) -> None:
     """Valida los invariantes del contrato de salida del preprocesamiento.
 
     Verifica:
@@ -97,7 +101,9 @@ def validate_preprocessed_contract(tensor: np.ndarray, target_size: int = DEFAUL
     """
     expected_shape = (1, target_size, target_size, 1)
     if tensor.shape != expected_shape:
-        raise AssertionError(f"Shape incorrecto: esperado {expected_shape}, obtenido {tensor.shape}")
+        raise AssertionError(
+            f"Shape incorrecto: esperado {expected_shape}, obtenido {tensor.shape}"
+        )
 
     if tensor.dtype != np.float32:
         raise AssertionError(f"Dtype incorrecto: esperado float32, obtenido {tensor.dtype}")
@@ -108,9 +114,7 @@ def validate_preprocessed_contract(tensor: np.ndarray, target_size: int = DEFAUL
     min_val = float(tensor.min())
     max_val = float(tensor.max())
     if min_val < 0.0 or max_val > 1.0:
-        raise AssertionError(
-            f"Valores fuera de rango [0.0, 1.0]: min={min_val}, max={max_val}"
-        )
+        raise AssertionError(f"Valores fuera de rango [0.0, 1.0]: min={min_val}, max={max_val}")
 
 
 def preprocess_image(

@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-import io
 from pathlib import Path
 
 import cv2
 import numpy as np
 import pydicom
-from pydicom.dataset import Dataset, FileDataset, FileMetaDataset
 import pytest
+from pydicom.dataset import FileDataset, FileMetaDataset
 
-from neumonia_detection.load_model import PneumoniaModelLoader, build_wilhemnet_architecture
+from neumonia_detection.load_model import PneumoniaModelLoader
 
 
 @pytest.fixture
