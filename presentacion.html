@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sustentación Neumonía Rayos X | UAO</title>
+  <style>
+    :root {
+      --primary: #102C57;
+      --secondary: #35A29F;
+      --accent: #DA4949;
+      --bg-dark: #0A192F;
+      --bg-card: #FFFFFF;
+      --text-dark: #1E293B;
+      --text-muted: #64748B;
+      --text-light: #F8FAFC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+    
+    .deck-container { width: 92vw; max-width: 1200px; height: 85vh; max-height: 720px; background: var(--text-light); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    
+    .slide-header { background: var(--primary); color: white; padding: 18px 36px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--secondary); }
+    .slide-header .meta { font-size: 0.85rem; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+    .slide-header h2 { font-size: 1.5rem; font-weight: 700; color: white; }
+    .slide-header .counter { font-size: 0.9rem; font-weight: 600; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; }
+    
+    .slide-content { flex: 1; padding: 36px; overflow-y: auto; display: none; }
+    .slide-content.active { display: flex; flex-direction: column; animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Cover slide */
+    .slide-cover { background: linear-gradient(135deg, var(--bg-dark) 0%, var(--primary) 100%); color: white; justify-content: center; align-items: center; text-align: center; }
+    .slide-cover h1 { font-size: 2.8rem; font-weight: 800; margin: 16px 0; color: white; line-height: 1.2; }
+    .slide-cover .badge { display: inline-block; background: var(--secondary); color: white; padding: 6px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+    .slide-cover p.sub { font-size: 1.25rem; color: #94A3B8; margin-bottom: 24px; max-width: 800px; }
+    .slide-cover .footer-meta { font-size: 0.95rem; color: var(--secondary); margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 18px; width: 80%; }
+    
+    /* Grid cards */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: 100%; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; height: 100%; }
+    
+    .card { background: white; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+    .card.accent { border-top: 4px solid var(--accent); }
+    .card.secondary { border-top: 4px solid var(--secondary); }
+    .card.primary { border-top: 4px solid var(--primary); }
+    .card h3 { font-size: 1.2rem; color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .card ul { list-style: none; }
+    .card ul li { font-size: 0.95rem; line-height: 1.6; color: var(--text-dark); margin-bottom: 10px; position: relative; padding-left: 20px; }
+    .card ul li::before { content: "•"; position: absolute; left: 4px; color: var(--secondary); font-size: 1.2rem; line-height: 1; }
+    
+    .code-pill { font-family: monospace; background: #F1F5F9; color: #0F172A; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; border: 1px solid #CBD5E1; }
+    
+    /* Speaker note bar */
+    .speaker-box { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 12px 18px; border-radius: 6px; font-size: 0.9rem; color: #92400E; margin-top: 18px; display: flex; gap: 10px; align-items: flex-start; }
+    .speaker-box strong { white-space: nowrap; }
+    
+    /* Controls footer */
+    .controls { background: #F8FAFC; border-top: 1px solid #E2E8F0; padding: 12px 36px; display: flex; justify-content: space-between; align-items: center; }
+    .controls button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+    .controls button:hover { background: #1B3C73; }
+    .controls button:disabled { background: #CBD5E1; cursor: not-allowed; }
+    .hint { font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<div class="deck-container">
+  <div class="slide-header" id="headerBar" style="display: none;">
+    <div>
+      <div class="meta" id="headerCategory">MAESTRÍA EN IA Y CD — UAO</div>
+      <h2 id="headerTitle">Título de Diapositiva</h2>
+    </div>
+    <div class="counter" id="slideCounter">1 / 8</div>
+  </div>
+
+  <!-- SLIDE 1: PORTADA -->
+  <div class="slide-content slide-cover active" data-title="Portada">
+    <div class="badge">Gestión de Proyectos en IA y CD — UAO</div>
+    <h1>Detección de Neumonía en Rayos X</h1>
+    <p class="sub">Arquitectura Modular MVC · Explicabilidad Grad-CAM · Testing AAA con Pytest · Contenedor CPU</p>
+    <div style="display: flex; gap: 10px; justify-content: center; margin: 10px 0;">
+      <span class="code-pill">uv + pyproject.toml</span>
+      <span class="code-pill">Ruff Linter</span>
+      <span class="code-pill">Pytest AAA (30 tests passed)</span>
+      <span class="code-pill">Docker CPU</span>
+      <span class="code-pill">Streamlit UI</span>
+    </div>
+    <div class="footer-meta">
+      <strong>Docente:</strong> Jan Polanco Velasco &nbsp;|&nbsp; <strong>Caso 1:</strong> Neumonía (Rayos X) &nbsp;|&nbsp; <strong>Repo:</strong> github.com/o31942/proyecto-neumonia
+    </div>
+  </div>
+
+  <!-- SLIDE 2: CONTEXTO Y PROBLEMA -->
+  <div class="slide-content" data-title="1. El Problema Clínico y Requisitos de Software" data-cat="Contexto y CRISP-DM">
+    <div class="grid-2">
+      <div class="card secondary">
+        <h3>🩺 El Reto Clínico Radiológico</h3>
+        <ul>
+          <li><strong>Alta variabilidad interobservador:</strong> Infiltrados pulmonares incipientes son difíciles de distinguir visualmente.</li>
+          <li><strong>Soporte dual de formatos:</strong> Estándar médico <span class="code-pill">DICOM (.dcm)</span> de 16-bits con calibración hospitalaria y formatos comunes <span class="code-pill">JPEG / PNG</span>.</li>
+          <li><strong>Manejo de interpretación fotométrica:</strong> Conversión robusta de <span class="code-pill">MONOCHROME1</span> (huesos negros) a <span class="code-pill">MONOCHROME2</span> (huesos blancos).</li>
+          <li><strong>Prohibición de "Cajas Negras":</strong> Se exige explicabilidad espacial (<span class="code-pill">Grad-CAM</span>) para auditoría clínica.</li>
+        </ul>
+      </div>
+      <div class="card primary">
+        <h3>⚙️ Reglas Estrictas de Ingeniería UAO</h3>
+        <ul>
+          <li><strong>Cero raw pip:</strong> Prohibido <span class="code-pill">pip install</span> y <span class="code-pill">requirements.txt</span>. Gestión determinista con <span class="code-pill">uv</span> y <span class="code-pill">uv.lock</span>.</li>
+          <li><strong>Cero Notebooks sucios:</strong> Prohibido versionar <span class="code-pill">.ipynb</span> en producción. Código modular puro en layout <span class="code-pill">src/</span>.</li>
+          <li><strong>Contratos matemáticos formales:</strong> Asertos explícitos de finitud (sin NaN/Inf) y rango cerrado <span class="code-pill">[0.0, 1.0]</span>.</li>
+          <li><strong>Inferencia CPU reproducible:</strong> Contenedor Docker liviano sin requerir GPUs NVIDIA.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Qué decir:</strong> "Enfatizar que el sistema fue concebido como un producto de ingeniería y no como un script experimental. Destacar el soporte nativo tanto para radiografías DICOM hospitalarias como para JPEG."
+    </div>
+  </div>
+
+  <!-- SLIDE 3: ARQUITECTURA MVC -->
+  <div class="slide-content" data-title="2. Arquitectura de Software Modular (Patrón MVC)" data-cat="Arquitectura y Clean Code">
+    <div class="grid-3">
+      <div class="card secondary">
+        <h3>🕹️ Controlador (Controller)</h3>
+        <ul>
+          <li><span class="code-pill">read_img.py</span>: Responsable único de leer DICOM y JPEG, retornando array 2D <span class="code-pill">uint8 (H, W)</span>.</li>
+          <li><span class="code-pill">preprocess_img.py</span>: CLAHE adaptativo, resize (512, 512) y asertos de contrato formal.</li>
+          <li><span class="code-pill">integrator.py</span>: Orquestador desacoplado con inyección de dependencias y modo CLI.</li>
+        </ul>
+      </div>
+      <div class="card primary">
+        <h3>🧠 Modelo (Model & XAI)</h3>
+        <ul>
+          <li><span class="code-pill">load_model.py</span>: Carga artefacto <span class="code-pill">WilhemNet86.h5</span> o inicializa arquitectura funcional compatible en CPU.</li>
+          <li>Inferencia probabilística con umbral de decisión ajustable.</li>
+          <li><span class="code-pill">grad_cam.py</span>: Cálculo de gradientes en <span class="code-pill">tf.GradientTape</span> sobre la capa <span class="code-pill">conv_last</span> y superposición Jet.</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h3>🖥️ Vista (View)</h3>
+        <ul>
+          <li><span class="code-pill">app.py</span>: Aplicación interactiva en Streamlit.</li>
+          <li>Comparativa tripartita: Original vs CLAHE vs Grad-CAM superpuesto.</li>
+          <li>Ajuste en vivo de umbrales clínicos y opacidad.</li>
+          <li>Alertas diagnósticas médicas y selector de muestras reales.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Qué decir:</strong> "Destacar la Alta Cohesión y Bajo Acoplamiento: cambiar el modelo convolucional no altera la interfaz de usuario ni los lectores; cada archivo tiene una única responsabilidad matemática o de presentación."
+    </div>
+  </div>
+
+  <!-- SLIDE 4: PREPROCESAMIENTO Y CONTRATOS -->
+  <div class="slide-content" data-title="3. Preprocesamiento CLAHE y Contratos Formales" data-cat="Calidad de Datos">
+    <div class="grid-2">
+      <div class="card secondary">
+        <h3>🔬 Algoritmo CLAHE Adaptativo</h3>
+        <ul>
+          <li><strong>¿Por qué CLAHE?</strong> La ecualización global quema las altas luces. CLAHE opera por cuadrículas contextuales de <span class="code-pill">(8, 8)</span>.</li>
+          <li><strong>Parámetro de corte:</strong> <span class="code-pill">clipLimit=2.0</span> previene la amplificación de ruido de alta frecuencia en el parénquima.</li>
+          <li><strong>Resize estandarizado:</strong> Interpolación bilineal adaptativa a <span class="code-pill">(512, 512)</span> px.</li>
+          <li><strong>Normalización precisa:</strong> Conversión a <span class="code-pill">float32</span> en escala continua <span class="code-pill">[0.0, 1.0]</span>.</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h3>🛡️ Asertos e Invariantes Matemáticos</h3>
+        <ul>
+          <li><span class="code-pill">assert tensor.shape == (1, 512, 512, 1)</span></li>
+          <li><span class="code-pill">assert tensor.dtype == np.float32</span></li>
+          <li><span class="code-pill">assert np.isfinite(tensor).all()</span> &nbsp;➡️ <strong>¡Cero NaN y cero Infinitos!</strong></li>
+          <li><span class="code-pill">assert 0.0 &lt;= tensor.min() and tensor.max() &lt;= 1.0</span></li>
+          <li><strong>Impacto:</strong> Elimina errores silenciosos en capas de Batch Normalization antes de gastar recursos de inferencia.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Qué decir:</strong> "El profesor valora mucho los asertos de contrato. Explicar que sin 'assert np.isfinite', un píxel corrupto en un DICOM causaría propagación silenciosa de NaN en toda la red neuronal."
+    </div>
+  </div>
+
+  <!-- SLIDE 5: MODELO Y GRAD-CAM -->
+  <div class="slide-content" data-title="4. Inferencia Convolucional y Explicabilidad Grad-CAM" data-cat="Modelo & XAI">
+    <div class="grid-2">
+      <div class="card primary">
+        <h3>⚡ Arquitectura WilhemNet86 (CPU)</h3>
+        <ul>
+          <li>Red neuronal convolucional profunda optimizada para CPU (inferencia &lt; 50 ms).</li>
+          <li>Bloques convolucionales con Batch Normalization y ReLU.</li>
+          <li><strong>Capa objetivo de explicabilidad:</strong> <span class="code-pill">conv_last</span> (256 canales con resolución espacial).</li>
+          <li>Global Average Pooling + Dropout (0.3) + Clasificación Sigmoide binaria.</li>
+        </ul>
+      </div>
+      <div class="card secondary">
+        <h3>🔥 Algoritmo Grad-CAM</h3>
+        <ul>
+          <li><strong>Paso 1:</strong> <span class="code-pill">tf.GradientTape</span> extrae los gradientes de la clase con respecto a los mapas de <span class="code-pill">conv_last</span>.</li>
+          <li><strong>Paso 2:</strong> Global Average Pooling de los gradientes para obtener los pesos de importancia de cada filtro.</li>
+          <li><strong>Paso 3:</strong> Combinación ponderada + activación ReLU (solo importancias positivas).</li>
+          <li><strong>Paso 4:</strong> Fusión alfa-blending: 40% mapa térmico Jet + 60% radiografía original.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Qué decir:</strong> "Resaltar que Grad-CAM permite al radiólogo auditar si el modelo diagnosticó neumonía por ver consolidaciones en los pulmones, o si fue engañado por artefactos externos como marcapasos o electrodos."
+    </div>
+  </div>
+
+  <!-- SLIDE 6: TESTING Y CALIDAD -->
+  <div class="slide-content" data-title="5. Testing AAA (Pytest) y CI/CD en GitHub" data-cat="Calidad y DevOps">
+    <div class="grid-2">
+      <div class="card secondary">
+        <h3>🧪 30 Pruebas Unitarias (Patrón AAA)</h3>
+        <ul>
+          <li><strong>Arrange (Preparar):</strong> Fixtures sintéticas de imágenes DICOM y JPEG en memoria en <span class="code-pill">conftest.py</span>.</li>
+          <li><strong>Act (Actuar):</strong> Ejecución aislada de la función o módulo bajo prueba.</li>
+          <li><strong>Assert (Afirmar):</strong> Verificación de dimensiones, tipos, rangos numéricos y excepciones.</li>
+          <li><strong>Resultado:</strong> <span class="code-pill" style="color: green; font-weight: bold;">30 passed in 30.85s (100% de éxito)</span>.</li>
+        </ul>
+      </div>
+      <div class="card primary">
+        <h3>🚀 Tooling Industrial y Gitflow</h3>
+        <ul>
+          <li><strong>uv + uv.lock:</strong> Gestión determinista de 73 dependencias en milisegundos.</li>
+          <li><strong>Ruff:</strong> Linter y formateador PEP 8 ultrarrápido (0 errores).</li>
+          <li><strong>Gitflow:</strong> Ramas <span class="code-pill">main</span> y <span class="code-pill">develop</span> sincronizadas en GitHub.</li>
+          <li><strong>Conventional Commits:</strong> Historial atómico (<span class="code-pill">feat:</span>, <span class="code-pill">test:</span>, <span class="code-pill">chore:</span>, <span class="code-pill">docs:</span>).</li>
+          <li><strong>GitHub Actions:</strong> CI pipeline en <span class="code-pill">.github/workflows/ci.yml</span>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Qué decir:</strong> "Mencionar que el proyecto tiene un historial de commits limpio siguiendo Conventional Commits y que el repositorio tiene la plantilla oficial de PR de la UAO configurada."
+    </div>
+  </div>
+
+  <!-- SLIDE 7: DOCKER Y GOBERNANZA -->
+  <div class="slide-content" data-title="6. Contenedor Docker y Gobernanza (EU AI Act)" data-cat="Reproducibilidad y Ética">
+    <div class="grid-2">
+      <div class="card primary">
+        <h3>🐳 Dockerfile CPU Reproducible</h3>
+        <ul>
+          <li>Imagen base <span class="code-pill">python:3.12-slim</span> liviana y segura.</li>
+          <li>Instalación determinista copiando el binario oficial de <span class="code-pill">uv</span>.</li>
+          <li>Inferencia 100% en CPU (sin dependencias complejas de CUDA ni GPU propietaria).</li>
+          <li>Seguridad: usuario no root <span class="code-pill">appuser (UID 1000)</span> y Healthcheck activo en puerto 8501.</li>
+          <li>Despliegue inmediato: <span class="code-pill">docker run -p 8501:8501 neumonia-app</span></li>
+        </ul>
+      </div>
+      <div class="card secondary">
+        <h3>⚖️ Gobernanza de IA y Ley Europea</h3>
+        <ul>
+          <li><strong>Clasificación:</strong> Sistema de IA de <strong>Alto Riesgo</strong> bajo el EU AI Act (Anexo III - Dispositivos Médicos).</li>
+          <li><strong>Supervisión Humana (Human-in-the-loop):</strong> La herramienta es de soporte diagnóstico; no emite sentencias autónomas vinculantes.</li>
+          <li><strong>Transparencia:</strong> Aviso de responsabilidad clínica explícito y explicabilidad visual con Grad-CAM.</li>
+          <li><strong>Trazabilidad y Auditoría:</strong> Metadatos técnicos expuestos en tiempo real para inspección del personal de salud.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Qué decir:</strong> "Vincular el proyecto con la Clase 5 del profesor (Gobernanza y Regulación): este sistema cumple los principios del EU AI Act en cuanto a transparencia, trazabilidad y supervisión humana."
+    </div>
+  </div>
+
+  <!-- SLIDE 8: DEMO Y CONCLUSIONES -->
+  <div class="slide-content" data-title="7. Demostración en Streamlit y Conclusiones" data-cat="Conclusiones">
+    <div class="grid-2">
+      <div class="card accent">
+        <h3>🖥️ Demostración en Vivo</h3>
+        <ul>
+          <li>La aplicación web está activa en: <span class="code-pill">http://localhost:8501</span></li>
+          <li>O ejecutable con doble clic desde: <span class="code-pill">iniciar_app.bat</span></li>
+          <li><strong>Caso 1:</strong> Carga de radiografía con Neumonía bacteriana (<span class="code-pill">sample_bacteria.jpeg</span>) ➡️ Alerta roja y activación focalizada.</li>
+          <li><strong>Caso 2:</strong> Carga de caso DICOM normal (<span class="code-pill">sample_normal.dcm</span>) ➡️ Diagnóstico Normal y baja activación térmica.</li>
+          <li><strong>Ajuste interactivo:</strong> Modificación del umbral de decisión en vivo.</li>
+        </ul>
+      </div>
+      <div class="card secondary">
+        <h3>🏆 Conclusiones de Ingeniería</h3>
+        <ul>
+          <li>La ingeniería de software rigurosa convierte algoritmos experimentales en software hospitalario robusto.</li>
+          <li>El desacoplamiento MVC protege la inversión tecnológica: cambiar la red neuronal no requiere reprogramar la UI ni los lectores de imágenes.</li>
+          <li>El determinismo de <span class="code-pill">uv</span> garantiza que el software corra idéntico hoy o dentro de 5 años.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaker-box">
+      <strong>🗣️ Cierre de presentación:</strong> "Concluir invitando a ver la aplicación web en vivo en localhost:8501 y abrir el espacio para preguntas del profesor."
+    </div>
+  </div>
+
+  <!-- FOOTER CONTROLS -->
+  <div class="controls">
+    <button id="prevBtn" onclick="prevSlide()" disabled>← Anterior</button>
+    <div class="hint">Usa las teclas de flecha <strong>←</strong> / <strong>→</strong> de tu teclado</div>
+    <button id="nextBtn" onclick="nextSlide()">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide-content');
+  const headerBar = document.getElementById('headerBar');
+  const headerTitle = document.getElementById('headerTitle');
+  const headerCategory = document.getElementById('headerCategory');
+  const slideCounter = document.getElementById('slideCounter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let currentSlide = 0;
+
+  function updateSlide(index) {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+    });
+
+    if (index === 0) {
+      headerBar.style.display = 'none';
+    } else {
+      headerBar.style.display = 'flex';
+      headerTitle.textContent = slides[index].getAttribute('data-title');
+      headerCategory.textContent = slides[index].getAttribute('data-cat') || 'MAESTRÍA EN IA Y CD — UAO';
+      slideCounter.textContent = `${index + 1} / ${slides.length}`;
+    }
+
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === slides.length - 1;
+    nextBtn.textContent = index === slides.length - 1 ? 'Fin de la Presentación' : 'Siguiente →';
+  }
+
+  function nextSlide() {
+    if (currentSlide < slides.length - 1) {
+      currentSlide++;
+      updateSlide(currentSlide);
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      updateSlide(currentSlide);
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      prevSlide();
+    }
+  });
+
+  updateSlide(0);
+</script>
+
+</body>
+</html>
