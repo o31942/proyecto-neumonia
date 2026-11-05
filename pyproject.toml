@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "neumonia-detection"
+version = "0.1.0"
+description = "Sistema modular MVC de detección de neumonía en Rayos X con explicabilidad Grad-CAM y UI Streamlit"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+authors = [
+    { name = "Estudiante UAO", email = "estudiante@uao.edu.co" }
+]
+keywords = ["deep-learning", "xray", "pneumonia", "grad-cam", "streamlit", "dicom"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+    "numpy>=1.26.0",
+    "pydicom>=2.4.4",
+    "opencv-python-headless>=4.8.0.76",
+    "pillow>=10.2.0",
+    "matplotlib>=3.8.0",
+    "streamlit>=1.35.0",
+    "tensorflow-cpu>=2.15.0; sys_platform != 'darwin' or platform_machine != 'arm64'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.5",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/neumonia_detection"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+]
+ignore = [
+    "E501", # line too long (handled by formatter)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --import-mode=importlib"
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]

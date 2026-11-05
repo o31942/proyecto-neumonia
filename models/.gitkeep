@@ -1,0 +1,1 @@
+# Keep models directory in git without tracking large binary weight files (*.h5, *.pt, *.onnx)
